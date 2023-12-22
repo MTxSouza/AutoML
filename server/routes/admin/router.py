@@ -25,7 +25,7 @@ async def get_users(
 
 
 @router.delete(path="/", response_model=User, status_code=200)
-async def delete_users(user_id: int, db: Session = Depends(dependency=get_db)):
+async def delete_user(user_id: int, db: Session = Depends(dependency=get_db)):
     """
     Delete an user from database.
     """
