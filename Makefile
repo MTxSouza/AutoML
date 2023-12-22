@@ -5,4 +5,4 @@ format:
 	@poetry run isort $(PY_FILES)
 
 run:
-	@poetry run uvicorn app.app:app --reload
+	@poetry run uvicorn server.app:app --reload

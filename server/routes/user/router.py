@@ -4,10 +4,11 @@ to database content related to them.
 """
 from typing import Annotated
 
-from app.database.model import UserTable
-from app.routes.auth.utils import get_current_user
-from app.routes.user.schemas import User, UserBase
 from fastapi import APIRouter, Depends
+
+from server.database.model import UserTable
+from server.routes.auth.utils import get_current_user
+from server.routes.user.schemas import User, UserBase
 
 # creating router
 router = APIRouter(prefix="/users", tags=["Users"])

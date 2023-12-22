@@ -26,9 +26,17 @@ def get_db():
 def select_instances(db: Session, table: Base, skip: int, limit: int) -> list[Base]:
     """
     Select N instances from any table
-    from database.
+    in database.
     """
     return db.query(table).offset(skip).limit(limit).all()
+
+
+def select_one_instance(db: Session, table: Base, instance_id: int) -> Base | None:
+    """
+    Select one instance from any table
+    in database.
+    """
+    return db.query(table).filter(table.id == instance_id).first()
 
 
 # INSERT
@@ -49,3 +57,16 @@ def insert_new_instance(db: Session, table: Base, data: BaseModel | dict) -> Bas
         )
     db.refresh(db_instace)
     return db_instace
+
+
+# DELETE
+def delete_instance(db: Session, table: Base, instance_id: int) -> Base | None:
+    """
+    Delete an instance from any table
+    in database.
+    """
+    instance = select_one_instance(db=db, table=table, instance_id=instance_id)
+    if instance:
+        db.delete(instance)
+        db.commit()
+    return instance
