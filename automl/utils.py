@@ -151,6 +151,8 @@ def load_csv_file(file_buffer: BinaryIO) -> dict:
     """
     # loading file
     df = pd.read_csv(filepath_or_buffer=file_buffer)
+    # checking memory size
+    mb = df.memory_usage(deep=True).sum().item()
     # checking number of registers
     registers = df.shape[0]
     # checking fields
@@ -167,4 +169,5 @@ def load_csv_file(file_buffer: BinaryIO) -> dict:
         },
         "encoding_list": encoding_list,
         "encoding": encoding,
+        "mb": mb
     }
