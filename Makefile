@@ -4,6 +4,10 @@ format:
 	@poetry run black $(PY_FILES)
 	@poetry run isort $(PY_FILES)
 
+build_dependencies:
+	@poetry export -f requirements.txt --with db,api -o requirements/base.txt --without-hashes
+	@poetry export -f requirements.txt --with dev -o requirements/dev.txt --without-hashes
+
 run:
 	@poetry run uvicorn server.app:app --reload
 
