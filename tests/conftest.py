@@ -14,9 +14,9 @@ from fastapi.testclient import TestClient
 
 from server.app import app
 
-
 # creating fixures
 random_id = str(uuid4())
+
 
 @pytest.fixture(scope="session")
 def client() -> TestClient:
@@ -30,4 +30,6 @@ def base_route() -> str:
 
 @pytest.fixture(scope="session")
 def fake_new_users() -> list[dict]:
-    return [{"username": f"user_{random_id}_{i}", "password": random_id} for i in range(10)]
+    return [
+        {"username": f"user_{random_id}_{i}", "password": random_id} for i in range(10)
+    ]
