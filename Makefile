@@ -6,3 +6,6 @@ format:
 
 run:
 	@poetry run uvicorn server.app:app --reload
+
+test:
+	@poetry run pytest --disable-warnings
