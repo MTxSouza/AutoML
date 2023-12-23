@@ -22,12 +22,10 @@ def check_file_content(file_buffer: BinaryIO, content_type: str) -> dict | None:
             status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Invalid file format"
         )
     # loading file
-    content = available_files[ext](file_buffer=file_buffer)
-
-    return {"data": content["data"], "encoding": content["encoding"], "ext": ext}
+    return available_files[ext](file_buffer=file_buffer)
 
 
-def find_encoding_mode(data: bytes | bytearray) -> str:
+def find_encoding_mode(data: bytes | bytearray) -> list[str]:
     """
     Find the encoding mode of a file.
     """
@@ -131,13 +129,16 @@ def find_encoding_mode(data: bytes | bytearray) -> str:
         "utf_8_sig",
     ]
 
+    encode_list = []
     for encoding in available_encodes:
         try:
             data.decode(encoding=encoding)
         except UnicodeDecodeError:
             continue
         else:
-            return encoding
+            encode_list.append(encoding)
+    if encode_list:
+        return encode_list
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail="Could not find the decode mode of file",
@@ -148,10 +149,22 @@ def load_csv_file(file_buffer: BinaryIO) -> dict:
     """
     Load any .csv file.
     """
-    # loading file and converting
-    # to numpy
-    np_data = pd.read_csv(filepath_or_buffer=file_buffer).values
+    # loading file
+    df = pd.read_csv(filepath_or_buffer=file_buffer)
+    # checking number of registers
+    registers = df.shape[0]
+    # checking fields
+    fields = list(df.columns)
     # finding decode mode
-    data_bytes = np_data.tobytes()
-    encoding = find_encoding_mode(data=data_bytes)
-    return {"data": data_bytes.decode(encoding=encoding), "encoding": encoding}
+    data_bytes = df.values.tobytes()
+    encoding_list = find_encoding_mode(data=data_bytes)
+    encoding = encoding_list[0]
+    return {
+        "file": {
+            "str": data_bytes.decode(encoding=encoding),
+            "registers": registers,
+            "fields": fields
+        },
+        "encoding_list": encoding_list,
+        "encoding": encoding,
+    }
