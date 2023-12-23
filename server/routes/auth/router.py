@@ -15,7 +15,7 @@ from server.routes.auth.utils import (authenticate_current_user,
 from server.routes.user.schemas import User, UserCreate, UserInDB
 
 # creating router
-router = APIRouter(tags=["Auth"])
+router = APIRouter(tags=["Auth"], dependencies=[Depends(dependency=get_db)])
 
 
 # routes

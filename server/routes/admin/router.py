@@ -10,7 +10,7 @@ from server.database.utils import (Session, delete_instance, get_db,
 from server.routes.user.schemas import User
 
 # creating router
-router = APIRouter(prefix="/admin", tags=["Admin"])
+router = APIRouter(prefix="/admin", tags=["Admin"], dependencies=[Depends(dependency=get_db)])
 
 
 # routes
