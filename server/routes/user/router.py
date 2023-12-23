@@ -6,6 +6,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, UploadFile
 
+from automl.utils import check_file_content
 from server.routes.auth.utils import get_current_active_user
 from server.routes.user.schemas import User, UserBase
 
@@ -38,8 +39,5 @@ async def upload_file(
     Upload the file to run the auto-ml
     system.
     """
-    print(file.filename)
-    print(file.content_type)
-    print(file.headers)
-    print(file.file)
-    return {}
+    content = check_file_content(file_buffer=file.file, content_type=file.content_type)
+    return content
