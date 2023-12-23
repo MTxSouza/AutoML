@@ -10,7 +10,11 @@ from server.routes.auth.utils import get_current_active_user
 from server.routes.user.schemas import User, UserBase
 
 # creating router
-router = APIRouter(prefix="/users", tags=["Users"], dependencies=[Depends(dependency=get_current_active_user)])
+router = APIRouter(
+    prefix="/users",
+    tags=["Users"],
+    dependencies=[Depends(dependency=get_current_active_user)],
+)
 
 
 # routes
