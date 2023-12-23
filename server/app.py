@@ -18,6 +18,6 @@ app.include_router(router=user_router)
 
 
 # main route
-@app.route(path="/")
+@app.get(path="/")
 async def main():
     return {"AutoML": "running"}
