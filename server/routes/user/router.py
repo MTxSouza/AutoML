@@ -30,7 +30,7 @@ async def get_current_user(
     return user
 
 
-@router.post(path="/data", response_model=dict, status_code=201)
+@router.post(path="/upload", response_model=dict, status_code=201)
 async def upload_file(
     file: UploadFile,
     user: Annotated[UserBase, Depends(dependency=get_current_active_user)],
