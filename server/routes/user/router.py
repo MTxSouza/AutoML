@@ -30,7 +30,7 @@ async def get_current_user(
     return user
 
 
-@router.post(path="/data", status_code=201)
+@router.post(path="/data", response_model=dict, status_code=201)
 async def upload_file(
     file: UploadFile,
     user: Annotated[UserBase, Depends(dependency=get_current_active_user)],
@@ -39,5 +39,4 @@ async def upload_file(
     Upload the file to run the auto-ml
     system.
     """
-    content = check_file_content(file_buffer=file.file, content_type=file.content_type)
-    return content
+    return check_file_content(file=file)
