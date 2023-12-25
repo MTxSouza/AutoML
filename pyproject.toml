@@ -31,6 +31,7 @@ httpx = "^0.26.0"
 
 [tool.poetry.group.ml.dependencies]
 pandas = "^2.1.4"
+chardet = "^5.2.0"
 
 [build-system]
 requires = ["poetry-core"]
