@@ -24,6 +24,7 @@ class FileTable(Base):
     __tablename__ = "files"
     id = Column(Integer, unique=True, primary_key=True, autoincrement=True)
     filename = Column(String(length=256), nullable=False)
+    separator = Column(String, nullable=False)
     file = Column(String, unique=True)
     encoding = Column(String(length=10), nullable=False)
     size = Column(Integer, nullable=False)

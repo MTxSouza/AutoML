@@ -34,6 +34,7 @@ class UserInDB(User):
 class File(BaseModel):
     id: Optional[int]
     filename: str
+    separator: str
     file: str
     encoding: str
     size: int

@@ -72,26 +72,14 @@ class CSVLoader(FileLoader):
                 logger.error(msg=str(error))
                 continue
             logger.debug(msg="Possible separator for CSV file has been found")
-            # retriving columns
-            self.columns = list(df.columns)
-            # making preview
-            preview_table = json.loads(s=df.head(n=5).to_json(orient="records"))
-            available_separators.append(
-                {
-                    "separator": sep,
-                    "shape": df.shape,
-                    "columns": self.columns,
-                    "content": preview_table,
-                }
-            )
+            available_separators.append(sep)
         if available_separators:
             return {
-                "data": {
-                    "previews": available_separators,
-                },
+                "file": json.dumps(obj=df.to_json(force_ascii=False)),
                 "filename": self.filename,
-                "encoding": self.encoding,
-                "size": self.memory_usage
+                "separator": str(available_separators),
+                "encoding": self.encoding["encoding"],
+                "size": self.memory_usage,
             }
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
