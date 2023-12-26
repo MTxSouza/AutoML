@@ -4,8 +4,9 @@ and organize any data into database.
 """
 from fastapi import status
 from fastapi.exceptions import HTTPException
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import relationship
 
 from server.database.config import ENGINE, Base
 
@@ -17,6 +18,18 @@ class UserTable(Base):
     hashed_password = Column(String, nullable=False)
     disabled = Column(Boolean, nullable=False)
     photo = Column(String, nullable=True)
+
+
+class FileTable(Base):
+    __tablename__ = "files"
+    id = Column(Integer, unique=True, primary_key=True, autoincrement=True)
+    filename = Column(String(length=256), nullable=False)
+    file = Column(String, unique=True)
+    encoding = Column(String(length=10), nullable=False)
+    size = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey(UserTable.id), nullable=False)
+
+    user = relationship(argument="UserTable", foreign_keys="FileTable.user_id")
 
 
 # creating tables

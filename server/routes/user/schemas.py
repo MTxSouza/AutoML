@@ -29,3 +29,14 @@ class User(UserBase):
 
 class UserInDB(User):
     hashed_password: str
+
+
+class File(BaseModel):
+    id: Optional[int]
+    filename: str
+    file: str
+    encoding: str
+    size: int
+
+    class Config:
+        from_attributes = True
