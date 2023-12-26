@@ -6,6 +6,7 @@ from fastapi import status
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import UnmappedInstanceError
 
 from server.database.config import Session
 from server.database.model import Base, FileTable, UserTable
@@ -106,4 +107,26 @@ def delete_instance(db: Session, table: Base, instance_id: int) -> Base | None:
     if instance:
         db.delete(instance)
         db.commit()
+    return instance
+
+
+def delete_file_instance(db: Session, user_id: int, file_id: int) -> Base:
+    """
+    Delete a file from database.
+    """
+    logger.trace(msg="delete_file_instance() has been called")
+    # filtering file
+    try:
+        instance = (
+            db.query(FileTable)
+            .filter(FileTable.id == file_id, FileTable.user_id == user_id)
+            .first()
+        )
+        db.delete(instance)
+        db.commit()
+    except UnmappedInstanceError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="File does not exist"
+        )
     return instance

@@ -7,8 +7,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, UploadFile
 
 from automl.utils import check_file_content
-from server.database.utils import (Session, get_db, insert_new_file,
-                                   select_files)
+from server.database.utils import (Session, delete_file_instance, get_db,
+                                   insert_new_file, select_files)
 from server.routes.auth.utils import get_current_active_user
 from server.routes.user.schemas import File, User
 
@@ -60,3 +60,15 @@ async def upload_file(
     # adding user id
     file_content["user_id"] = user.id
     return insert_new_file(db=db, data=file_content)
+
+
+@router.delete(path="/files", response_model=File, status_code=201)
+async def delete_file(
+    file_id: int,
+    user: Annotated[User, Depends(dependency=get_current_active_user)],
+    db: Annotated[Session, Depends(dependency=get_db)],
+):
+    """
+    Delete a file of user.
+    """
+    return delete_file_instance(db=db, user_id=user.id, file_id=file_id)
