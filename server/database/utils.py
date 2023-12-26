@@ -97,16 +97,20 @@ def insert_new_file(db: Session, data: dict) -> Base:
 
 
 # DELETE
-def delete_instance(db: Session, table: Base, instance_id: int) -> Base | None:
+def delete_user_instance(db: Session, user_id: int) -> Base:
     """
-    Delete an instance from any table
-    in database.
+    Delete an user from database.
     """
-    logger.trace(msg="delete_instance() has been called")
-    instance = select_one_instance(db=db, table=table, instance_id=instance_id)
-    if instance:
+    logger.trace(msg="delete_user_instance() has been called")
+    # filtering file
+    try:
+        instance = db.query(UserTable).filter(UserTable.id == user_id).first()
         db.delete(instance)
         db.commit()
+    except UnmappedInstanceError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User does not exist"
+        )
     return instance
 
 
@@ -126,7 +130,6 @@ def delete_file_instance(db: Session, user_id: int, file_id: int) -> Base:
         db.commit()
     except UnmappedInstanceError:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="File does not exist"
+            status_code=status.HTTP_404_NOT_FOUND, detail="File does not exist"
         )
     return instance
