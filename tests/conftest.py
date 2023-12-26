@@ -22,6 +22,7 @@ engine = create_engine(
     echo=False,
 )
 TestingSession = sessionmaker(bind=engine)
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 
