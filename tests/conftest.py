@@ -13,7 +13,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from server.app import app
-from server.database.config import create_engine, sessionmaker, Base
+from server.database.config import Base, create_engine, sessionmaker
 from server.database.utils import get_db
 
 # creating testing database
