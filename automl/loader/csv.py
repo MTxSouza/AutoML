@@ -10,6 +10,7 @@ from fastapi import UploadFile, status
 from fastapi.exceptions import HTTPException
 
 from automl.loader import FileLoader
+from server.logging import logger
 
 
 class CSVLoader(FileLoader):
@@ -40,6 +41,7 @@ class CSVLoader(FileLoader):
             "+",
             "=",
         ]
+        logger.debug(msg="Initializing CSV loader")
 
     # properties
     @property
@@ -54,31 +56,21 @@ class CSVLoader(FileLoader):
     def load_file(self, file: UploadFile) -> dict:
         super().load_file(file)
         # converting to string
+        logger.debug(msg="Looking for CSV file encoding")
         str_content = self.file.decode(encoding=self.encoding["encoding"]).strip()
-        # loading table
-        base_table = str_content.split(sep="\n")
+        # finding all available separators
+        logger.debug(msg="Looking for CSV separator")
         available_separators = []
-        # finding all available characters
         for sep in self.__separators:
-            # creating table
-            table = list(map(lambda row: row.split(sep=sep), base_table))
-            # checking consistent shape
-            try:
-                np_table = np.asarray(a=table)
-                assert np_table.shape[1] != 1
-                del np_table
-            except Exception:
-                continue
             # creating dataframe
             try:
-                buffer = io.StringIO(initial_value=str_content)
-                df = pd.read_csv(buffer, sep=sep, encoding=self.encoding["encoding"])
+                with io.StringIO(initial_value=str_content) as buffer:
+                    df = pd.read_csv(buffer, sep=sep, encoding=self.encoding["encoding"])
+                    assert df.shape[1] != 1
             except Exception as error:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(error)
-                )
-            finally:
-                buffer.close()
+                logger.error(msg=str(error))
+                continue
+            logger.debug(msg="Possible separator for CSV file has been found")
             # retriving columns
             self.columns = list(df.columns)
             # making preview
