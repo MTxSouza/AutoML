@@ -4,7 +4,6 @@ Main class to handle any .csv file.
 import io
 import json
 
-import numpy as np
 import pandas as pd
 from fastapi import UploadFile, status
 from fastapi.exceptions import HTTPException
@@ -65,7 +64,9 @@ class CSVLoader(FileLoader):
             # creating dataframe
             try:
                 with io.StringIO(initial_value=str_content) as buffer:
-                    df = pd.read_csv(buffer, sep=sep, encoding=self.encoding["encoding"])
+                    df = pd.read_csv(
+                        buffer, sep=sep, encoding=self.encoding["encoding"]
+                    )
                     assert df.shape[1] != 1
             except Exception as error:
                 logger.error(msg=str(error))
@@ -87,10 +88,10 @@ class CSVLoader(FileLoader):
             return {
                 "data": {
                     "previews": available_separators,
-                    "memory": self.memory_usage,
                 },
                 "filename": self.filename,
                 "encoding": self.encoding,
+                "size": self.memory_usage
             }
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
