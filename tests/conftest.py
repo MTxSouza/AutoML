@@ -13,6 +13,28 @@ import pytest
 from fastapi.testclient import TestClient
 
 from server.app import app
+from server.database.config import create_engine, sessionmaker, Base
+from server.database.utils import get_db
+
+# creating testing database
+engine = create_engine(
+    url=os.path.join(f"sqlite+pysqlite:///{os.getcwd()}", "tests", "db.sqlite3"),
+    echo=False,
+)
+TestingSession = sessionmaker(bind=engine)
+Base.metadata.create_all(bind=engine)
+
+
+def override_get_db():
+    try:
+        db = TestingSession()
+        yield db
+    finally:
+        db.close()
+
+
+app.dependency_overrides[get_db] = override_get_db
+
 
 # creating fixures
 random_id = str(uuid4())
