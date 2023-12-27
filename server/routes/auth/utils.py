@@ -11,7 +11,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 from server.database.model import UserTable
-from server.database.utils import Session
+from server.database.utils import Session, get_db
 from server.routes.user.schemas import User
 
 # defining oauth scheme
@@ -79,7 +79,10 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 
 
 # async functions
-async def get_current_user(token: Annotated[str, Depends(oauth_scheme)]) -> list[User]:
+async def get_current_user(
+    token: Annotated[str, Depends(dependency=oauth_scheme)],
+    db: Annotated[Session, Depends(dependency=get_db)],
+) -> list[User]:
     """
     Return the current logged user.
     """
@@ -95,13 +98,15 @@ async def get_current_user(token: Annotated[str, Depends(oauth_scheme)]) -> list
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user = get_user(username=username)
+    user = get_user(db=db, username=username)
     if not user:
         raise credentials_exception
     return user
 
 
-async def get_current_active_user(user: Annotated[User, Depends(get_current_user)]):
+async def get_current_active_user(
+    user: Annotated[User, Depends(dependency=get_current_user)]
+):
     if user.disabled:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"

@@ -5,12 +5,14 @@ to database content related to them.
 from fastapi import APIRouter, Depends
 
 from server.database.model import UserTable
-from server.database.utils import (Session, delete_instance, get_db,
+from server.database.utils import (Session, delete_user_instance, get_db,
                                    select_instances)
 from server.routes.user.schemas import User
 
 # creating router
-router = APIRouter(prefix="/admin", tags=["Admin"])
+router = APIRouter(
+    prefix="/admin", tags=["Admin"], dependencies=[Depends(dependency=get_db)]
+)
 
 
 # routes
@@ -29,4 +31,4 @@ async def delete_user(user_id: int, db: Session = Depends(dependency=get_db)):
     """
     Delete an user from database.
     """
-    return delete_instance(db=db, table=UserTable, instance_id=user_id)
+    return delete_user_instance(db=db, user_id=user_id)

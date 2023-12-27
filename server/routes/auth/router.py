@@ -6,8 +6,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
-from server.database.model import UserTable
-from server.database.utils import Session, get_db, insert_new_instance
+from server.database.utils import Session, get_db, insert_new_user
 from server.routes.auth.schemas import Token
 from server.routes.auth.utils import (authenticate_current_user,
                                       create_access_token,
@@ -15,7 +14,7 @@ from server.routes.auth.utils import (authenticate_current_user,
 from server.routes.user.schemas import User, UserCreate, UserInDB
 
 # creating router
-router = APIRouter(tags=["Auth"])
+router = APIRouter(tags=["Auth"], dependencies=[Depends(dependency=get_db)])
 
 
 # routes
@@ -45,9 +44,8 @@ async def register_new_user(user: UserCreate, db: Session = Depends(dependency=g
     hashed_password = get_hashed_user_password(
         password=user.password.get_secret_value()
     )
-    return insert_new_instance(
+    return insert_new_user(
         db=db,
-        table=UserTable,
         data=UserInDB.model_construct(
             username=user.username, hashed_password=hashed_password
         ),
