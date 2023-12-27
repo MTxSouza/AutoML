@@ -60,32 +60,17 @@ def fake_new_users() -> list[dict]:
 @pytest.fixture(scope="session")
 def valid_files() -> list[dict]:
     return [
-        {
-            "path": os.path.join(folder_path, "data", "anv.csv"),
-            "status": 201
-        },
-        {
-            "path": os.path.join(folder_path, "data", "books.csv"),
-            "status": 201
-        },
-        {
-            "path": os.path.join(folder_path, "data", "heart.csv"),
-            "status": 201
-        },
-        {
-            "path": os.path.join(folder_path, "data", "netflix.csv"),
-            "status": 201
-        }
+        {"path": os.path.join(folder_path, "data", "anv.csv"), "status": 201},
+        {"path": os.path.join(folder_path, "data", "books.csv"), "status": 201},
+        {"path": os.path.join(folder_path, "data", "heart.csv"), "status": 201},
+        {"path": os.path.join(folder_path, "data", "netflix.csv"), "status": 201},
     ]
 
 
 @pytest.fixture(scope="session")
 def invalid_files() -> list[dict]:
     return [
-        {
-            "path": os.path.join(folder_path, "data", "tweets.csv"),
-            "status": 413
-        },
+        {"path": os.path.join(folder_path, "data", "tweets.csv"), "status": 413},
     ]
 
 
