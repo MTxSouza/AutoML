@@ -5,7 +5,7 @@ format:
 	@poetry run isort $(PY_FILES)
 
 build_dependencies:
-	@poetry export -f requirements.txt --with db,api -o requirements/base.txt --without-hashes
+	@poetry export -f requirements.txt --with db,api,ml -o requirements/base.txt --without-hashes
 	@poetry export -f requirements.txt --with dev -o requirements/dev.txt --without-hashes
 
 run:
