@@ -17,8 +17,9 @@ from server.database.config import Base, create_engine, sessionmaker
 from server.database.utils import get_db
 
 # creating testing database
+folder_path = os.path.join(os.getcwd(), "tests")
 engine = create_engine(
-    url=os.path.join(f"sqlite+pysqlite:///{os.getcwd()}", "tests", "db.sqlite3"),
+    url=os.path.join(f"sqlite+pysqlite:///{folder_path}", "db.sqlite3"),
     echo=False,
 )
 TestingSession = sessionmaker(bind=engine)
@@ -38,9 +39,6 @@ app.dependency_overrides[get_db] = override_get_db
 
 
 # creating fixures
-random_id = str(uuid4())
-
-
 @pytest.fixture(scope="session")
 def client() -> TestClient:
     return TestClient(app=app)
@@ -54,5 +52,38 @@ def base_route() -> str:
 @pytest.fixture(scope="session")
 def fake_new_users() -> list[dict]:
     return [
-        {"username": f"user_{random_id}_{i}", "password": random_id} for i in range(10)
+        {"username": f"user_{str(uuid4())}_{i}", "password": str(uuid4())}
+        for i in range(10)
     ]
+
+
+@pytest.fixture(scope="session")
+def datasets() -> list[dict]:
+    return [
+        {"path": os.path.join(folder_path, "data", "anv.csv"), "status_insert": 201, "status_delete": 201},
+        {"path": os.path.join(folder_path, "data", "books.csv"), "status_insert": 201, "status_delete": 201},
+        {"path": os.path.join(folder_path, "data", "heart.csv"), "status_insert": 201, "status_delete": 201},
+        {"path": os.path.join(folder_path, "data", "netflix.csv"), "status_insert": 201, "status_delete": 201},
+        {"path": os.path.join(folder_path, "data", "tweets.csv"), "status_insert": 413, "status_delete": 404},
+    ]
+    
+@pytest.fixture(scope="session")
+def fake_new_user() -> dict:
+    return {"username": f"username_{str(uuid4())}", "password": f"password_{str(uuid4())}"}
+
+@pytest.fixture(scope="session")
+def token(fake_new_user, client, base_route):
+    """
+    Login the new user
+    """
+    # register
+    response = client.post(url=os.path.join(base_route, "register"), json=fake_new_user)
+    # checking response
+    assert response.status_code == 201
+    data = response.json()
+    assert data["username"] == fake_new_user["username"]
+    # login
+    response = client.post(url=os.path.join(base_route, "token"), data=fake_new_user)
+    # checking response
+    assert response.status_code == 201
+    return {"Authorization": f"Bearer {response.json().get('access_token')}"}

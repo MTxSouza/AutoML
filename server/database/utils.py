@@ -76,7 +76,7 @@ def insert_new_user(db: Session, data: dict) -> Base:
     try:
         return insert_new_instance(db=db, table=UserTable, data=data)
     except IntegrityError:
-        logger.error(msg=f"Username {data['username']} already exists")
+        logger.error(msg=f"Username already exists")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists"
         )
