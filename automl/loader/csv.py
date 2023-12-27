@@ -75,9 +75,9 @@ class CSVLoader(FileLoader):
             available_separators.append(sep)
         if available_separators:
             return {
-                "file": json.dumps(obj=df.to_json(force_ascii=False)),
+                "file": str_content,
                 "filename": self.filename,
-                "separator": str(available_separators),
+                "separator": "".join(available_separators),
                 "encoding": self.encoding["encoding"],
                 "size": self.memory_usage,
             }
