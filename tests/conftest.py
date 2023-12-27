@@ -60,16 +60,41 @@ def fake_new_users() -> list[dict]:
 @pytest.fixture(scope="session")
 def datasets() -> list[dict]:
     return [
-        {"path": os.path.join(folder_path, "data", "anv.csv"), "status_insert": 201, "status_delete": 201},
-        {"path": os.path.join(folder_path, "data", "books.csv"), "status_insert": 201, "status_delete": 201},
-        {"path": os.path.join(folder_path, "data", "heart.csv"), "status_insert": 201, "status_delete": 201},
-        {"path": os.path.join(folder_path, "data", "netflix.csv"), "status_insert": 201, "status_delete": 201},
-        {"path": os.path.join(folder_path, "data", "tweets.csv"), "status_insert": 413, "status_delete": 404},
+        {
+            "path": os.path.join(folder_path, "data", "anv.csv"),
+            "status_insert": 201,
+            "status_delete": 201,
+        },
+        {
+            "path": os.path.join(folder_path, "data", "books.csv"),
+            "status_insert": 201,
+            "status_delete": 201,
+        },
+        {
+            "path": os.path.join(folder_path, "data", "heart.csv"),
+            "status_insert": 201,
+            "status_delete": 201,
+        },
+        {
+            "path": os.path.join(folder_path, "data", "netflix.csv"),
+            "status_insert": 201,
+            "status_delete": 201,
+        },
+        {
+            "path": os.path.join(folder_path, "data", "tweets.csv"),
+            "status_insert": 413,
+            "status_delete": 404,
+        },
     ]
-    
+
+
 @pytest.fixture(scope="session")
 def fake_new_user() -> dict:
-    return {"username": f"username_{str(uuid4())}", "password": f"password_{str(uuid4())}"}
+    return {
+        "username": f"username_{str(uuid4())}",
+        "password": f"password_{str(uuid4())}",
+    }
+
 
 @pytest.fixture(scope="session")
 def token(fake_new_user, client, base_route):
