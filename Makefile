@@ -14,3 +14,8 @@ run-db:
 
 stop-db:
 	@docker stop automl-db
+
+init:
+	@make run-db
+	@poetry run python main.py
+	@make stop-db
