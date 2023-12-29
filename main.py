@@ -18,6 +18,3 @@ if __name__=="__main__":
     
     # initialize folders
     build_logging_folder()
-    
-    # imports
-    import database.config as config
