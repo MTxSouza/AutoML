@@ -23,6 +23,4 @@ stop-db:
 	@docker stop automl-db
 
 init:
-	@make start-db
 	@poetry run python main.py
-	@make stop-db
