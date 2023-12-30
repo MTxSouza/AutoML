@@ -14,7 +14,13 @@ def build_logging_folder() -> None:
         os.mkdir(path=folder_name)
 
 
-if __name__=="__main__":
-    
+if __name__ == "__main__":
     # initialize folders
     build_logging_folder()
+
+    # imports
+    import uvicorn
+
+    from app.app import app
+
+    uvicorn.run(app=app, host="127.0.0.1", port=8000)
