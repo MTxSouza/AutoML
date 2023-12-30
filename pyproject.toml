@@ -18,6 +18,11 @@ motor = "^3.3.2"
 black = "^23.12.1"
 isort = "^5.13.2"
 
+
+[tool.poetry.group.api.dependencies]
+fastapi = "^0.108.0"
+uvicorn = "^0.25.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
